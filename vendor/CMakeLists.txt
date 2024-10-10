@@ -9,7 +9,7 @@ set(VENDOR_PREFIX_DIR ${CMAKE_SOURCE_DIR}/build/prefix)
 
 
 include(ExternalProject)
-if(NOT TARGET my_repo AND NOT TARGET my_repo_lib)
+if(NOT TARGET my_repo)
     ExternalProject_Add(
       my_repo
       GIT_REPOSITORY https://github.com/ibrahimmtega/my_repo.git
@@ -28,7 +28,7 @@ if(NOT TARGET my_repo AND NOT TARGET my_repo_lib)
     )
 endif()
 
-if(NOT TARGET my_repo_2 AND NOT TARGET my_repo_2_lib)
+if(NOT TARGET my_repo_2)
     ExternalProject_Add(
       my_repo_2
       GIT_REPOSITORY https://github.com/ibrahimmtega/my_repo_2.git

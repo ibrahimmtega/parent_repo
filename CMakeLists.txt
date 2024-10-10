@@ -26,5 +26,6 @@ add_executable(${PROJECT_NAME}
 )
 target_link_libraries(${PROJECT_NAME}  Qt${QT_VERSION_MAJOR}::Core)
 target_link_libraries(${PROJECT_NAME}  vendor_repo_lib)
+target_link_libraries(${PROJECT_NAME}  my_repo_2_lib)
 
 # add_dependencies(${PROJECT_NAME} vendor_repo_lib)
