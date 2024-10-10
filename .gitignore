@@ -1,6 +1,6 @@
 # This file is used to ignore files which are generated
 # ----------------------------------------------------------------------------
-build/*
+
 *~
 *.autosave
 *.a
@@ -81,4 +81,4 @@ vendor/**
 # Unignore the specific important files
 !vendor/CMakeLists.txt
 !vendor/important.h
-
+build/**
