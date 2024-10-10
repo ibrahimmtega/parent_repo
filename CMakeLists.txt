@@ -9,38 +9,59 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-include(/opt/Qt/6.5.3/macos/lib/cmake/Qt6/qt.toolchain.cmake)
+set(Qt6_DIR           /opt/Qt/6.5.3/macos/lib/cmake/Qt6)
+set(VENDOR_SRC_DIR    ${CMAKE_SOURCE_DIR}/vendor)
+set(VENDOR_BINARY_DIR ${CMAKE_SOURCE_DIR}/build/vendor)
+set(VENDOR_PREFIX_DIR ${CMAKE_SOURCE_DIR}/build/prefix)
+
+include(${Qt6_DIR}/qt.toolchain.cmake)
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core)
 
 include(ExternalProject)
-ExternalProject_Add(
-  my_repo_2
-  GIT_REPOSITORY https://github.com/ibrahimmtega/my_repo_2.git
-  GIT_TAG main
-  BINARY_DIR ${CMAKE_SOURCE_DIR}/build/vendor/my_repo_2
-  PREFIX ${CMAKE_SOURCE_DIR}/build/extras/my_repo_2
-  SOURCE_DIR ${CMAKE_SOURCE_DIR}/vendor/my_repo_2
-  INSTALL_COMMAND ""
-  BUILD_ALWAYS ON
-  GIT_PROGRESS ON
-  # INSTALL_DIR ${CMAKE_SOURCE_DIR}/build/external/install
-  # CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/my_repo_2-install # Arguments passed to CMake of the external project
-)
+
+
 
 ExternalProject_Add(
   my_repo
   GIT_REPOSITORY https://github.com/ibrahimmtega/my_repo.git
   GIT_TAG main
-  BINARY_DIR ${CMAKE_SOURCE_DIR}/build/vendor/my_repo
-  PREFIX ${CMAKE_SOURCE_DIR}/build/extras/my_repo
-  SOURCE_DIR ${CMAKE_SOURCE_DIR}/vendor/my_repo
+  BINARY_DIR ${VENDOR_BINARY_DIR}/my_repo
+  PREFIX ${VENDOR_PREFIX_DIR}/my_repo
+  SOURCE_DIR ${VENDOR_SRC_DIR}/my_repo
   INSTALL_COMMAND ""
   BUILD_ALWAYS ON
   GIT_PROGRESS ON
+  CMAKE_ARGS
+    -DVENDOR_SRC_DIR=${VENDOR_SRC_DIR}
+    -DVENDOR_BINARY_DIR=${VENDOR_BINARY_DIR}
+    -DVENDOR_PREFIX_DIR=${VENDOR_PREFIX_DIR}
+    -DQt6_DIR=${Qt6_DIR}
   # INSTALL_DIR ${CMAKE_SOURCE_DIR}/build/external/install
   # CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/my_repo_2-install # Arguments passed to CMake of the external project
 )
+
+if(NOT TARGET my_repo_2)
+
+    # message(FATAL_ERROR "See")
+
+    ExternalProject_Add(
+      my_repo_2
+      GIT_REPOSITORY https://github.com/ibrahimmtega/my_repo_2.git
+      GIT_TAG main
+      BINARY_DIR ${CMAKE_SOURCE_DIR}/build/vendor/my_repo_2
+      PREFIX ${CMAKE_SOURCE_DIR}/build/extras/my_repo_2
+      SOURCE_DIR ${CMAKE_SOURCE_DIR}/vendor/my_repo_2
+      INSTALL_COMMAND ""
+      BUILD_ALWAYS ON
+      GIT_PROGRESS ON
+      # INSTALL_DIR ${CMAKE_SOURCE_DIR}/build/external/install
+      # CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/my_repo_2-install # Arguments passed to CMake of the external project
+    )
+
+endif()
+
+
 
 add_executable(parent_repo
   main.cpp
