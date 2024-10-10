@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(vendor_repo_lib LANGUAGES CXX)
+project(vendor_repo_libs LANGUAGES CXX)
 
 set(Qt6_DIR           /opt/Qt/6.5.3/macos/lib/cmake/Qt6)
 set(VENDOR_SRC_DIR    ${CMAKE_SOURCE_DIR}/vendor)
@@ -47,31 +47,28 @@ if(NOT TARGET my_repo_2)
      )
 endif()
 
-add_library(vendor_repo_lib)
+add_library(vendor_repo_libs)
 
 
-if(NOT TARGET imported_my_repo_2_lib)
-    add_library(imported_my_repo_2_lib INTERFACE IMPORTED)
-    set_target_properties(imported_my_repo_2_lib PROPERTIES
-      IMPORTED_LOCATION ${VENDOR_BINARY_DIR}/my_repo_2/libmy_repo_2_lib.a
-      INTERFACE_INCLUDE_DIRECTORIES ${VENDOR_SRC_DIR}/my_repo_2
-    )
-endif()
+add_library(imported_my_repo_2_lib INTERFACE IMPORTED)
+set_target_properties(imported_my_repo_2_lib PROPERTIES
+  IMPORTED_LOCATION ${VENDOR_BINARY_DIR}/my_repo_2/libmy_repo_2_lib.a
+  INTERFACE_INCLUDE_DIRECTORIES ${VENDOR_SRC_DIR}/my_repo_2
+)
 add_dependencies(imported_my_repo_2_lib my_repo_2)
-target_link_libraries(vendor_repo_lib PUBLIC imported_my_repo_2_lib)
+target_link_libraries(vendor_repo_libs PUBLIC imported_my_repo_2_lib)
 if(EXISTS "${VENDOR_SRC_DIR}/my_repo_2/CMakeLists.txt")
     add_subdirectory(my_repo_2 EXCLUDE_FROM_ALL SYSTEM)
 endif()
 
-if(NOT TARGET imported_my_repo_lib)
-    add_library(imported_my_repo_lib INTERFACE IMPORTED)
-    set_target_properties(imported_my_repo_lib PROPERTIES
-      IMPORTED_LOCATION ${VENDOR_BINARY_DIR}/my_repo_2/libmy_repo_lib.a
-      INTERFACE_INCLUDE_DIRECTORIES ${VENDOR_SRC_DIR}/my_repo_2
-    )
-endif()
+
+add_library(imported_my_repo_lib INTERFACE IMPORTED)
+set_target_properties(imported_my_repo_lib PROPERTIES
+  IMPORTED_LOCATION ${VENDOR_BINARY_DIR}/my_repo_2/libmy_repo_lib.a
+  INTERFACE_INCLUDE_DIRECTORIES ${VENDOR_SRC_DIR}/my_repo_2
+)
 add_dependencies(imported_my_repo_lib my_repo)
-target_link_libraries(vendor_repo_lib PUBLIC imported_my_repo_lib)
+target_link_libraries(vendor_repo_libs PUBLIC imported_my_repo_lib)
 if(EXISTS "${VENDOR_SRC_DIR}/my_repo/CMakeLists.txt")
     add_subdirectory(my_repo EXCLUDE_FROM_ALL SYSTEM)
 endif()
