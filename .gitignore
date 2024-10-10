@@ -72,3 +72,13 @@ CMakeLists.txt.user*
 *.dll
 *.exe
 
+# Ignore everything under vendor/ recursively
+vendor/**
+
+# Unignore the vendor directory itself
+!vendor/
+
+# Unignore the specific important files
+!vendor/CMakeLists.txt
+!vendor/important.h
+
