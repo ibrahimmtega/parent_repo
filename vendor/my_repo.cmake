@@ -1,12 +1,12 @@
 set(RECIPE_NAME my_repo)
 if(NOT TARGET ${RECIPE_NAME})
     ExternalProject_Add(
-      my_repo
+      ${RECIPE_NAME}
       GIT_REPOSITORY https://github.com/ibrahimmtega/my_repo.git
       GIT_TAG main
-      BINARY_DIR ${VENDOR_BINARY_DIR}/my_repo
-      PREFIX ${VENDOR_PREFIX_DIR}/my_repo
-      SOURCE_DIR ${VENDOR_SRC_DIR}/my_repo
+      BINARY_DIR ${VENDOR_BINARY_DIR}/${RECIPE_NAME}
+      PREFIX ${VENDOR_PREFIX_DIR}/${RECIPE_NAME}
+      SOURCE_DIR ${VENDOR_SRC_DIR}/${RECIPE_NAME}
       INSTALL_COMMAND ""
       BUILD_ALWAYS ON
       GIT_PROGRESS ON
@@ -18,20 +18,22 @@ if(NOT TARGET ${RECIPE_NAME})
     )
 endif()
 
+ExternalProject_Get_Property(${RECIPE_NAME} BINARY_DIR SOURCE_DIR)
 
-if(EXISTS "${VENDOR_SRC_DIR}/my_repo/CMakeLists.txt")
-    add_subdirectory(my_repo EXCLUDE_FROM_ALL SYSTEM)
+if(EXISTS "${SOURCE_DIR}/CMakeLists.txt")
+    add_subdirectory(${RECIPE_NAME} EXCLUDE_FROM_ALL SYSTEM)
 endif()
 
-set(LIB_my_repo ${VENDOR_BINARY_DIR}/my_repo/libmy_repo_lib.a)
-if(NOT EXISTS "${LIB_my_repo}")
-    file(TOUCH "${LIB_my_repo}")
+set(LIB_NAME libmy_repo_lib.a)
+if(NOT EXISTS "${BINARY_DIR}/${LIB_NAME}")
+    file(TOUCH "${BINARY_DIR}/${LIB_NAME}")
 endif()
 
 add_library(imported_my_repo_lib STATIC IMPORTED GLOBAL)
 set_target_properties(imported_my_repo_lib PROPERTIES
-  IMPORTED_LOCATION ${LIB_my_repo}
-  INTERFACE_INCLUDE_DIRECTORIES ${VENDOR_SRC_DIR}/my_repo
+  IMPORTED_LOCATION ${BINARY_DIR}/${LIB_NAME}
+  INTERFACE_INCLUDE_DIRECTORIES ${SOURCE_DIR}
 )
-add_dependencies(imported_my_repo_lib my_repo)
+add_dependencies(imported_my_repo_lib ${RECIPE_NAME})
+
 target_link_libraries(vendor_repo_libs INTERFACE imported_my_repo_lib)

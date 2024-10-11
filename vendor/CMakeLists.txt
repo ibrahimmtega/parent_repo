@@ -11,11 +11,8 @@ include(ExternalProject)
 
 add_library(vendor_repo_libs STATIC)
 
-# file(GLOB cmake_files "${CMAKE_CURRENT_LIST_DIR}/*.cmake")
-# foreach(cmake_file ${cmake_files})
-#     include(${cmake_file})
-# endforeach()
+file(GLOB cmake_files "${CMAKE_CURRENT_LIST_DIR}/*.cmake")
+foreach(cmake_file ${cmake_files})
+    include(${cmake_file})
+endforeach()
 
-
-include(my_repo_2.cmake)
-include(my_repo.cmake)
