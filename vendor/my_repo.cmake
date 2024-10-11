@@ -1,4 +1,9 @@
 set(RECIPE_NAME my_repo)
+
+if(NOT DEFINED INTERFACE_LIB)
+    message(FATAL_ERROR "please set INTERFACE")
+endif()
+
 if(NOT TARGET ${RECIPE_NAME})
     ExternalProject_Add(
       ${RECIPE_NAME}
@@ -29,11 +34,11 @@ if(NOT EXISTS "${BINARY_DIR}/${LIB_NAME}")
     file(TOUCH "${BINARY_DIR}/${LIB_NAME}")
 endif()
 
-add_library(imported_${RECIPE_NAME} STATIC IMPORTED )
+add_library(imported_${RECIPE_NAME} STATIC IMPORTED)
 set_target_properties(imported_${RECIPE_NAME} PROPERTIES
   IMPORTED_LOCATION ${BINARY_DIR}/${LIB_NAME}
   INTERFACE_INCLUDE_DIRECTORIES ${SOURCE_DIR}
 )
 add_dependencies(imported_${RECIPE_NAME} ${RECIPE_NAME})
 
-target_link_libraries(vendor_repo_libs INTERFACE imported_${RECIPE_NAME})
+target_link_libraries(${INTERFACE_LIB} INTERFACE imported_${RECIPE_NAME})
