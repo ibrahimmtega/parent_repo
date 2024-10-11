@@ -24,8 +24,10 @@ add_subdirectory(vendor)
 add_executable(${PROJECT_NAME}
   main.cpp
 )
-target_link_libraries(${PROJECT_NAME}  Qt${QT_VERSION_MAJOR}::Core)
-target_link_libraries(${PROJECT_NAME}  vendor_repo_libs)
-target_link_libraries(${PROJECT_NAME}  my_repo_2_lib)
 
-# add_dependencies(${PROJECT_NAME} vendor_repo_lib)
+add_dependencies(${PROJECT_NAME} vendor_repo_libs)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE  Qt${QT_VERSION_MAJOR}::Core)
+target_link_libraries(${PROJECT_NAME} PRIVATE  vendor_repo_libs)
+
+

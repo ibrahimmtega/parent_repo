@@ -47,29 +47,47 @@ if(NOT TARGET my_repo_2)
      )
 endif()
 
-add_library(vendor_repo_libs)
+add_library(vendor_repo_libs INTERFACE)
 
 
-add_library(imported_my_repo_2_lib INTERFACE IMPORTED)
-set_target_properties(imported_my_repo_2_lib PROPERTIES
-  IMPORTED_LOCATION ${VENDOR_BINARY_DIR}/my_repo_2/libmy_repo_2_lib.a
-  INTERFACE_INCLUDE_DIRECTORIES ${VENDOR_SRC_DIR}/my_repo_2
-)
-add_dependencies(imported_my_repo_2_lib my_repo_2)
-target_link_libraries(vendor_repo_libs PUBLIC imported_my_repo_2_lib)
+####################################################################################################
+
 if(EXISTS "${VENDOR_SRC_DIR}/my_repo_2/CMakeLists.txt")
     add_subdirectory(my_repo_2 EXCLUDE_FROM_ALL SYSTEM)
 endif()
 
-
-add_library(imported_my_repo_lib INTERFACE IMPORTED)
-set_target_properties(imported_my_repo_lib PROPERTIES
-  IMPORTED_LOCATION ${VENDOR_BINARY_DIR}/my_repo_2/libmy_repo_lib.a
+set(LIB_my_repo_2 ${VENDOR_BINARY_DIR}/my_repo_2/libmy_repo_2_lib.a)
+if(NOT EXISTS "${LIB_my_repo_2}")
+    file(TOUCH "${LIB_my_repo_2}")
+endif()
+add_library(imported_my_repo_2_lib STATIC IMPORTED GLOBAL)
+set_target_properties(imported_my_repo_2_lib PROPERTIES
+  IMPORTED_LOCATION ${LIB_my_repo_2}
   INTERFACE_INCLUDE_DIRECTORIES ${VENDOR_SRC_DIR}/my_repo_2
 )
-add_dependencies(imported_my_repo_lib my_repo)
-target_link_libraries(vendor_repo_libs PUBLIC imported_my_repo_lib)
+add_dependencies(imported_my_repo_2_lib my_repo_2)
+add_dependencies(vendor_repo_libs imported_my_repo_2_lib)
+target_link_libraries(vendor_repo_libs INTERFACE imported_my_repo_2_lib)
+
+#######################################################################################################
+
 if(EXISTS "${VENDOR_SRC_DIR}/my_repo/CMakeLists.txt")
     add_subdirectory(my_repo EXCLUDE_FROM_ALL SYSTEM)
 endif()
+
+set(LIB_my_repo ${VENDOR_BINARY_DIR}/my_repo/libmy_repo_lib.a)
+if(NOT EXISTS "${LIB_my_repo}")
+    file(TOUCH "${LIB_my_repo}")
+endif()
+add_library(imported_my_repo_lib STATIC IMPORTED GLOBAL)
+set_target_properties(imported_my_repo_lib PROPERTIES
+  IMPORTED_LOCATION ${LIB_my_repo}
+  INTERFACE_INCLUDE_DIRECTORIES ${VENDOR_SRC_DIR}/my_repo
+)
+add_dependencies(imported_my_repo_lib my_repo)
+add_dependencies(vendor_repo_libs imported_my_repo_lib)
+target_link_libraries(vendor_repo_libs INTERFACE imported_my_repo_lib)
+
+####################################################################################################
+
 
